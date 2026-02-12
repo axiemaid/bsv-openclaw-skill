@@ -37,11 +37,11 @@ Once installed, just talk to your agent:
 ## Manual Usage
 
 ```bash
-node scripts/wallet.js init              # Create wallet
-node scripts/wallet.js address           # Show address
-node scripts/wallet.js balance [addr]    # Check balance
-node scripts/wallet.js send <addr> <bsv> # Send BSV
-node scripts/wallet.js info              # Show wallet details
+node scripts/wallet.cjs init              # Create wallet
+node scripts/wallet.cjs address           # Show address
+node scripts/wallet.cjs balance [addr]    # Check balance
+node scripts/wallet.cjs send <addr> <bsv> # Send BSV
+node scripts/wallet.cjs info              # Show wallet details
 ```
 
 ## License

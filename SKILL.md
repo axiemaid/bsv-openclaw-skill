@@ -13,29 +13,29 @@ First run installs the `bsv` npm package automatically. Wallet key is stored at 
 
 ### Initialize wallet (first time)
 ```bash
-node scripts/wallet.js init
+node scripts/wallet.cjs init
 ```
 
 ### Show receiving address
 ```bash
-node scripts/wallet.js address
+node scripts/wallet.cjs address
 ```
 
 ### Check balance
 ```bash
-node scripts/wallet.js balance [address]
+node scripts/wallet.cjs balance [address]
 ```
 Omit address to check your own wallet's balance.
 
 ### Send BSV
 ```bash
-node scripts/wallet.js send <address> <amount_bsv>
+node scripts/wallet.cjs send <address> <amount_bsv>
 ```
 Sends the specified amount in BSV. Prompts nothing — confirm before running.
 
 ### Show wallet info
 ```bash
-node scripts/wallet.js info
+node scripts/wallet.cjs info
 ```
 Shows address and WIF (private key). **Sensitive — don't share the WIF.**
 

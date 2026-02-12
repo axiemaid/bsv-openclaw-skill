@@ -31,7 +31,7 @@ Once installed, just talk to your agent:
 
 ## How It Works
 
-- **Wallet:** Automatically created on first run — single private key stored as WIF in `~/.openclaw/bsv-wallet.json` (600 permissions). Each agent gets its own wallet, no manual setup required.
+- **Wallet:** Auto-created on first run — single private key stored as WIF in `~/.openclaw/bsv-wallet.json` (600 permissions)
 - **API:** WhatsOnChain mainnet — balance lookups, UTXO fetching, tx broadcast
 - **Fees:** 1 sat/byte (standard BSV rate)
 

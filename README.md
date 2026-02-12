@@ -4,7 +4,7 @@ A simple Bitcoin SV wallet skill that lets your OpenClaw agent check balances, s
 
 ## Features
 
-- **Auto wallet creation** — Agent gets its own BSV wallet on first use (single key, stored securely)
+- **Auto wallet creation** — Agent gets its own BSV wallet on first use
 - **Check balance** — Query any BSV address or your own wallet
 - **Send BSV** — Send to any address with automatic UTXO selection and change handling
 - **Receive BSV** — Show your wallet address for deposits

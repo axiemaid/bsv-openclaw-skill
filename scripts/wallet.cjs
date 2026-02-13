@@ -207,32 +207,47 @@ async function cmdSendAll(toAddress) {
   if (!utxos.length) { console.error('No UTXOs available (zero balance)'); process.exit(1); }
 
   const totalIn = utxos.reduce((sum, u) => sum + u.value, 0);
-  const fee = (148 * utxos.length + 34 * 1 + 10) * FEE_RATE; // single output, no change
-  const sendAmount = totalIn - fee;
-  if (sendAmount <= 0) { console.error('Balance too low to cover fee'); process.exit(1); }
 
   const privKey = bsv.PrivKey.fromWif(w.wif);
   const keyPair = bsv.KeyPair.fromPrivKey(privKey);
   const pubKey = keyPair.pubKey;
 
-  const txb = new bsv.TxBuilder();
-  txb.outputToAddress(new bsv.Bn(sendAmount), bsv.Address.fromString(toAddress));
+  // Build a dummy tx first to calculate the real size/fee
+  // Then rebuild with the correct send amount
+  const estimateSize = 148 * utxos.length + 34 + 10;
+  let fee = Math.ceil(estimateSize * FEE_RATE);
+  // Pad fee slightly to account for signature size variance
+  fee = Math.ceil(fee * 1.02);
+  let sendAmount = totalIn - fee;
+  if (sendAmount <= 0) { console.error('Balance too low to cover fee'); process.exit(1); }
 
+  // Build tx manually without TxBuilder to avoid fee recalculation issues
+  const tx = new bsv.Tx();
+
+  // Add inputs
+  const inputScripts = [];
   for (const u of utxos) {
     const rawTx = await httpGet(`${WOC_BASE}/tx/${u.tx_hash}/hex`);
-    const tx = bsv.Tx.fromHex(typeof rawTx === 'string' ? rawTx : rawTx.hex || rawTx);
-    const txOut = tx.txOuts[u.tx_pos];
+    const prevTx = bsv.Tx.fromHex(typeof rawTx === 'string' ? rawTx : rawTx.hex || rawTx);
+    const txOut = prevTx.txOuts[u.tx_pos];
     const txHashBuf = Buffer.from(u.tx_hash, 'hex').reverse();
-    txb.inputFromPubKeyHash(txHashBuf, u.tx_pos, txOut, pubKey);
+    tx.addTxIn(txHashBuf, u.tx_pos, new bsv.Script(), 0xffffffff);
+    inputScripts.push(txOut);
   }
 
-  txb.setFeePerKbNum(FEE_RATE * 1000);
-  txb.build({ useAllInputs: true });
+  // Add output
+  tx.addTxOut(new bsv.Bn(sendAmount), bsv.Address.fromString(toAddress).toTxOutScript());
+
+  // Sign each input
   for (let i = 0; i < utxos.length; i++) {
-    txb.signWithKeyPairs([keyPair]);
+    const sig = tx.sign(keyPair, bsv.Sig.SIGHASH_ALL | bsv.Sig.SIGHASH_FORKID, i, inputScripts[i].script, inputScripts[i].valueBn);
+    const sigScript = new bsv.Script();
+    sigScript.writeBuffer(sig.toTxFormat());
+    sigScript.writeBuffer(pubKey.toBuffer());
+    tx.txIns[i].setScript(sigScript);
   }
 
-  const txHex = txb.tx.toHex();
+  const txHex = tx.toHex();
   console.log('Broadcasting transaction...');
   const result = await httpPost(`${WOC_BASE}/tx/raw`, { txhex: txHex });
   const txid = typeof result === 'string' ? result.replace(/"/g, '') : result.txid || result;

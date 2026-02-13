@@ -44,6 +44,7 @@ node scripts/wallet.cjs init              # Create wallet
 node scripts/wallet.cjs address           # Show address
 node scripts/wallet.cjs balance [addr]    # Check balance
 node scripts/wallet.cjs send <addr> <bsv> # Send BSV
+node scripts/wallet.cjs sendall <addr>    # Send entire balance (minus fee)
 node scripts/wallet.cjs info              # Show wallet details
 ```
 

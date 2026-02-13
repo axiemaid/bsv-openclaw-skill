@@ -193,6 +193,54 @@ async function cmdSend(toAddress, amountBsv) {
   if (change > 546) console.log(`Change: ${(change / SAT_PER_BSV).toFixed(8)} BSV`);
 }
 
+async function cmdSendAll(toAddress) {
+  const bsv = ensureBsv();
+  const w = loadWallet();
+  if (!w) { console.error('No wallet. Run: node wallet.cjs init'); process.exit(1); }
+  if (!toAddress) { console.error('Usage: node wallet.cjs sendall <address>'); process.exit(1); }
+
+  // Validate destination address
+  try { bsv.Address.fromString(toAddress); } catch { console.error('Invalid BSV address'); process.exit(1); }
+
+  // Fetch UTXOs
+  const utxos = await httpGet(`${WOC_BASE}/address/${w.address}/unspent`);
+  if (!utxos.length) { console.error('No UTXOs available (zero balance)'); process.exit(1); }
+
+  const totalIn = utxos.reduce((sum, u) => sum + u.value, 0);
+  const fee = (148 * utxos.length + 34 * 1 + 10) * FEE_RATE; // single output, no change
+  const sendAmount = totalIn - fee;
+  if (sendAmount <= 0) { console.error('Balance too low to cover fee'); process.exit(1); }
+
+  const privKey = bsv.PrivKey.fromWif(w.wif);
+  const keyPair = bsv.KeyPair.fromPrivKey(privKey);
+  const pubKey = keyPair.pubKey;
+
+  const txb = new bsv.TxBuilder();
+  txb.outputToAddress(new bsv.Bn(sendAmount), bsv.Address.fromString(toAddress));
+
+  for (const u of utxos) {
+    const rawTx = await httpGet(`${WOC_BASE}/tx/${u.tx_hash}/hex`);
+    const tx = bsv.Tx.fromHex(typeof rawTx === 'string' ? rawTx : rawTx.hex || rawTx);
+    const txOut = tx.txOuts[u.tx_pos];
+    const txHashBuf = Buffer.from(u.tx_hash, 'hex').reverse();
+    txb.inputFromPubKeyHash(txHashBuf, u.tx_pos, txOut, pubKey);
+  }
+
+  txb.setFeePerKbNum(FEE_RATE * 1000);
+  txb.build({ useAllInputs: true });
+  for (let i = 0; i < utxos.length; i++) {
+    txb.signWithKeyPairs([keyPair]);
+  }
+
+  const txHex = txb.tx.toHex();
+  console.log('Broadcasting transaction...');
+  const result = await httpPost(`${WOC_BASE}/tx/raw`, { txhex: txHex });
+  const txid = typeof result === 'string' ? result.replace(/"/g, '') : result.txid || result;
+  console.log(`✅ Sent ${(sendAmount / SAT_PER_BSV).toFixed(8)} BSV to ${toAddress}`);
+  console.log(`TXID: ${txid}`);
+  console.log(`Fee: ${fee} satoshis`);
+}
+
 async function cmdInfo() {
   const w = loadWallet();
   if (!w) { console.error('No wallet. Run: node wallet.js init'); process.exit(1); }
@@ -209,6 +257,7 @@ const commands = {
   address: cmdAddress,
   balance: () => cmdBalance(args[0]),
   send: () => cmdSend(args[0], args[1]),
+  sendall: () => cmdSendAll(args[0]),
   info: cmdInfo,
 };
 
@@ -218,6 +267,7 @@ if (!cmd || !commands[cmd]) {
   console.log('  address           Show receiving address');
   console.log('  balance [addr]    Check BSV balance');
   console.log('  send <addr> <bsv> Send BSV');
+  console.log('  sendall <addr>    Send entire balance (minus fee)');
   console.log('  info              Show wallet details (includes WIF)');
   process.exit(0);
 }

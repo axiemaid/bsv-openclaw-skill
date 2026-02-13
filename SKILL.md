@@ -49,6 +49,12 @@ node scripts/wallet.cjs send <address> <amount_bsv>
 ```
 Sends the specified amount in BSV. Prompts nothing — confirm before running.
 
+### Send entire balance
+```bash
+node scripts/wallet.cjs sendall <address>
+```
+Sends the full wallet balance minus the transaction fee.
+
 ### Show wallet info
 ```bash
 node scripts/wallet.cjs info

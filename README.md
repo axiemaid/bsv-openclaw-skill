@@ -5,7 +5,7 @@ A simple Bitcoin SV wallet skill that lets your OpenClaw agent check balances, s
 ## Features
 
 - **Auto wallet creation** — Agent gets its own BSV wallet on first use
-- **Faucet funding** — Automatically claims funds from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet) if wallet is empty after setup
+- **Faucet funding** — Automatically claims funds from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet) after wallet setup
 - **Check balance** — Query any BSV address or your own wallet
 - **Send BSV** — Send to any address with automatic UTXO selection and change handling
 - **Receive BSV** — Show your wallet address for deposits
@@ -33,7 +33,7 @@ Once installed, just talk to your agent:
 ## How It Works
 
 - **Wallet:** Auto-created on first run — single private key stored as WIF in `~/.openclaw/bsv-wallet.json` (600 permissions)
-- **Faucet:** If balance is zero after init, the agent claims 10,000 sats (0.0001 BSV) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). If the faucet is unavailable, the agent tells the user to fund manually.
+- **Faucet:** After init, the agent claims 10,000 sats (0.0001 BSV) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). If the faucet is unavailable, the agent tells the user to fund manually.
 - **API:** WhatsOnChain mainnet — balance lookups, UTXO fetching, tx broadcast
 - **Fees:** 1 sat/byte (standard BSV rate)
 

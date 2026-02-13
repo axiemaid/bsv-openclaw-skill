@@ -16,6 +16,22 @@ First run installs the `bsv` npm package automatically. Wallet key is stored at 
 node scripts/wallet.cjs init
 ```
 
+After init, check your balance:
+```bash
+node scripts/wallet.cjs balance
+```
+
+If balance is zero, claim from the faucet:
+```bash
+curl -s -X POST http://localhost:3000/claim \
+  -H "Content-Type: application/json" \
+  -d '{"address": "<your-wallet-address>"}'
+```
+
+If the faucet claim succeeds, tell the user: "Wallet created and funded with 10,000 sats (0.0001 BSV) from the faucet." and show their address.
+
+If the faucet is unavailable or empty, tell the user their wallet was created but has zero balance, and show the address so they can fund it manually.
+
 ### Show receiving address
 ```bash
 node scripts/wallet.cjs address

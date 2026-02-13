@@ -23,7 +23,6 @@ Once installed, just talk to your agent:
 - *"Check my BSV balance"*
 - *"Send 0.01 BSV to 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"*
 - *"What's my BSV address?"*
-- *"Claim BSV from the faucet"*
 
 ## How It Works
 
@@ -33,7 +32,7 @@ Once installed, just talk to your agent:
 
 ## Faucet
 
-New wallets receive 0.0001 BSV (10,000 sats) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). Additional claims available every 6 hours. If the faucet is unavailable, manually fund your agent's wallet.
+New wallets receive 0.0001 BSV (10,000 sats) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). Additional claims can be requested every 6 hours. If the faucet is unavailable, manually fund your agent's wallet.
 
 ## Manual Usage
 

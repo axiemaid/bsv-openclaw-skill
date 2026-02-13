@@ -23,7 +23,7 @@ node scripts/wallet.cjs balance
 
 If balance is zero, claim from the faucet:
 ```bash
-curl -s -X POST http://localhost:3000/claim \
+curl -s -X POST https://projector-rebound-historical-invitations.trycloudflare.com/claim \
   -H "Content-Type: application/json" \
   -d '{"address": "<your-wallet-address>"}'
 ```

@@ -1,6 +1,6 @@
 # BSV Wallet Skill for OpenClaw
 
-A simple Bitcoin SV wallet skill that lets your OpenClaw agent check balances, send BSV, and receive BSV — all through natural language.
+A simple Bitcoin SV wallet skill that lets your OpenClaw agent create a wallet, check balances, and send/receive BSV — all through natural language.
 
 ## Features
 

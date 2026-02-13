@@ -10,7 +10,7 @@ A simple Bitcoin SV wallet skill that lets your OpenClaw agent create a wallet, 
 - **Receive BSV** — Show your wallet address for deposits
 - **No API key needed** — Uses [WhatsOnChain](https://whatsonchain.com) (free, no auth)
 
-> 💰 New wallets are automatically funded with 10,000 sats (0.0001 BSV) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). One claim per address. If the faucet is unavailable, the agent shows the wallet address for manual funding.
+> New wallets are automatically funded with 0.0001 BSV (10,000 sats) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). If the faucet is unavailable, manually fund your agent's wallet.
 
 ## Install
 

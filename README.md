@@ -24,6 +24,7 @@ Once installed, just talk to your agent:
 - *"Check my BSV balance"*
 - *"Send 0.01 BSV to 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"*
 - *"What's my BSV address?"*
+- *"Claim BSV from the faucet"*
 
 ## How It Works
 

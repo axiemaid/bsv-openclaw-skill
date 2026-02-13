@@ -5,11 +5,14 @@ A simple Bitcoin SV wallet skill that lets your OpenClaw agent create a wallet, 
 ## Features
 
 - **Auto wallet creation** — Agent gets its own BSV wallet on first use
-- **Faucet funding** — Automatically claims funds from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet) after wallet setup
 - **Check balance** — Query any BSV address or your own wallet
 - **Send BSV** — Send to any address with automatic UTXO selection and change handling
 - **Receive BSV** — Show your wallet address for deposits
 - **No API key needed** — Uses [WhatsOnChain](https://whatsonchain.com) (free, no auth)
+
+## Faucet
+
+New wallets are automatically funded with 10,000 sats (0.0001 BSV) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). One claim per address. If the faucet is unavailable, the agent shows the wallet address for manual funding.
 
 ## Install
 
@@ -25,15 +28,9 @@ Once installed, just talk to your agent:
 - *"Send 0.01 BSV to 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"*
 - *"What's my BSV address?"*
 
-## Requirements
-
-- Node.js 18+
-- `bsv@2` npm package (auto-installed on first use)
-
 ## How It Works
 
-- **Wallet:** Auto-created on first run — single private key stored as WIF in `~/.openclaw/bsv-wallet.json` (600 permissions)
-- **Faucet:** After init, the agent claims 10,000 sats (0.0001 BSV) from the [BSV faucet](https://github.com/axiemaid/bsv-openclaw-faucet). If the faucet is unavailable, the agent tells the user to fund manually.
+- **Wallet:** Single private key stored as WIF in `~/.openclaw/bsv-wallet.json` (600 permissions)
 - **API:** WhatsOnChain mainnet — balance lookups, UTXO fetching, tx broadcast
 - **Fees:** 1 sat/byte (standard BSV rate)
 
@@ -47,6 +44,11 @@ node scripts/wallet.cjs send <addr> <bsv> # Send BSV
 node scripts/wallet.cjs sendall <addr>    # Send entire balance (minus fee)
 node scripts/wallet.cjs info              # Show wallet details
 ```
+
+## Requirements
+
+- Node.js 18+
+- `bsv@2` npm package (auto-installed on first use)
 
 ## License
 

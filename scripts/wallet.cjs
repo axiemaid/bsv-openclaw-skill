@@ -11,7 +11,7 @@ const https = require('https');
 const WALLET_PATH = path.join(process.env.HOME, '.openclaw', 'bsv-wallet.json');
 const WOC_BASE = 'https://api.whatsonchain.com/v1/bsv/main';
 const SAT_PER_BSV = 1e8;
-const FEE_RATE = 0.005; // ~1 sat per tx under 1KB (BSV miner policy, not 1 sat/byte)
+const FEE_RATE = 1; // sat/byte
 
 // Ensure bsv package is installed
 function ensureBsv() {
@@ -132,21 +132,18 @@ async function cmdSend(toAddress, amountBsv) {
   // Sort UTXOs largest first for efficient selection
   utxos.sort((a, b) => b.value - a.value);
 
-  // BSV miners accept ~1 sat total for txs under 1KB
-  function calcFee(numInputs, numOutputs) {
-    const txSize = 10 + 148 * numInputs + 34 * numOutputs;
-    return Math.max(1, Math.ceil(txSize / 1000));
-  }
-
+  // Select UTXOs
   let selected = [];
   let totalIn = 0;
   for (const u of utxos) {
     selected.push(u);
     totalIn += u.value;
-    if (totalIn >= amountSat + calcFee(selected.length, 2)) break;
+    // Rough fee estimate: 148*inputs + 34*outputs + 10
+    const estFee = (148 * selected.length + 34 * 2 + 10) * FEE_RATE;
+    if (totalIn >= amountSat + estFee) break;
   }
 
-  const fee = calcFee(selected.length, 2);
+  const fee = (148 * selected.length + 34 * 2 + 10) * FEE_RATE;
   const change = totalIn - amountSat - fee;
   if (change < 0) {
     console.error(`Insufficient funds. Need ${((amountSat + fee) / SAT_PER_BSV).toFixed(8)} BSV, have ${(totalIn / SAT_PER_BSV).toFixed(8)} BSV`);
@@ -176,7 +173,7 @@ async function cmdSend(toAddress, amountBsv) {
   }
 
   // Set fee and change
-  txb.setFeePerKbNum(1); // 1 sat/kB = ~1 sat per tx under 1KB
+  txb.setFeePerKbNum(FEE_RATE * 1000);
 
   // Build and sign
   txb.build({ useAllInputs: true });

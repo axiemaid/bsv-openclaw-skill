@@ -28,7 +28,7 @@ curl -s -X POST https://faucet.axiemaid.com/claim \
   -d '{"address": "<your-wallet-address>"}'
 ```
 
-If the faucet claim succeeds, tell the user: "Wallet created and funded with 10,000 sats (0.0001 BSV) from the faucet." and show their address.
+If the faucet claim succeeds, tell the user: "Wallet created and funded with 1,000 sats (0.00001 BSV) from the faucet." and show their address.
 
 If the faucet is unavailable or empty, tell the user their wallet was created but has zero balance, and show the address so they can fund it manually.
 
